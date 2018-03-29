@@ -11,15 +11,18 @@ stat - Show server info
 add - Add server
 ```
 
+
 ## 1. Install dependencies
 ```bash
 sudo apt install python python-pip python-dev git curl wget build-essential openssl
 ```
 
+
 ## 2. Install Python packages
 ```bash
 pip install pymongo pyTelegramBotAPI flask
 ```
+
 
 ## 3. Install MongoDB
 Reference: [Official Documentation](https://www.mongodb.com/download-center#community)
@@ -34,12 +37,14 @@ sudo systemctl start mongod
 Edit `/etc/mongod.conf` and make sure `bindIp` is set to`127.0.0.1`.
 (Since MongoDB has no password on default, we just allow it to listen on localhost. And it's a good idea to setup firewalls.)
 
+
 ## 4. Download program
 cd to a dir and clone the code. In this example we choose `/home`
 ```bash
 cd /home
 git clone https://github.com/BennyThink/ServerSan
 ```
+
 
 ## 5. Configure 
 ### (1). API
@@ -49,8 +54,10 @@ Edit `ss-agent.py` and change the API to your url. It's better to make sure it's
 We recommend using [Let's Encrypt](https://letsencrypt.org/getting-started/) to obtain an SSL certificate.
 Then you should edit your path for private key and certificate in the first few lines of `weebhook.py`
 
+
 ## 6. Test your configuration
 If you believe everything is good to go, type `python weebhook.py` and `python main.py` to check if everything is fine.
+
 
 ## 7. Run with systemd
 As always we recommend to run the program with systemd.
@@ -70,6 +77,7 @@ ExecStart=/usr/bin/python /home/ServerSan/serversan/webhook.py
 [Install]
 WantedBy=multi-user.target
 ```
+
 ### (2). main program
 Create a new file: `/lib/systemd/system/ssmain.service`, replace TOKEN with your bot token.
 ```
@@ -94,8 +102,17 @@ systemctl start ssmain.service
 systemctl start sswebhook.service
 ```
 
+
+## Resource Consumption
+Under my normal running, only for your reference, the actually RAM consumption may vary.
+* Webhook: CPU: 0.984s, RAM: 21.3MiB with 3 tasks
+* main: CPU: 5.604s, RAM: 29.2MiB with 7 tasks
+* MongoDB: CPU: 19.985s, RAM: more RAM, more faster. For me it used about 150MiB of RAM with 27 tasks(threads).
+
+
 ## More:
 * use Nginx for upstream.
+
 
 ## Delete
 ```bash
